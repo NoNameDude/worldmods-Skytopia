@@ -45,10 +45,10 @@ skyblock.levels[level].feats = {
       craft = {"farming:hoe_stone"}
    },
    {
-      name = "Use the hoe 40 times",
-      hint = "farming:hoe_stone",
-      feat = "use_hoe",
-      count = 40,
+      name = "Plant 10 oat seeds",
+      hint = "farming:seed_oat",
+      feat = "plant_oat",
+      count = 10,
       reward = "farming:melon_slice",
       hoeuse = {}
    },
