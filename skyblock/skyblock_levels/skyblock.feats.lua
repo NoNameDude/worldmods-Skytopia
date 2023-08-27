@@ -421,13 +421,25 @@ minetest.override_item('bucket:bucket_lava', {
 	on_use = bucket_lava_on_use,
 })
 
--- add protection to hoes
+-- track hoe feats
+function skyblock.feats.hoe_on_use(itemstack, user, pointed_thing)
+    local player_name = user:get_player_name()
+    local level = skyblock.feats.get_level(player_name)
+    if skyblock.levels[level].hoe_on_use then
+       skyblock.levels[level].hoe_on_use(player_name, pointed_thing, itemstack:get_name())
+    end
+end
+ 
+-- add protection to hoes, and also a callback
 for _, material in pairs({"wood", "stone", "steel", "bronze", "mese", "diamond"}) do
 	local old_use = minetest.registered_items["farming:hoe_" .. material].on_use
 	minetest.override_item("farming:hoe_" .. material, {
 		on_use = function(itemstack, user, pointed_thing)
-			if not minetest.is_protected(pointed_thing.above, user:get_player_name()) then
-				old_use(itemstack, user, pointed_thing)
+			if pointed_thing.above and not minetest.is_protected(pointed_thing.above, user:get_player_name()) then
+			   if old_use(itemstack, user, pointed_thing) then
+			      -- Also update feats if the hoe did something
+			      skyblock.feats.hoe_on_use(itemstack, user, pointed_thing)
+			   end
 			end
 		end
 	})
